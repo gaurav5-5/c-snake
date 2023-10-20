@@ -1,0 +1,26 @@
+# CMake-generated files
+build/**
+CMakeFiles/**
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_flags.txt
+compile_commands.json
+merged_compile_commands.json
+
+# Compiled object files
+*.o
+
+# Executables
+*.exe
+*.out
+
+# Libraries
+*.a
+*.lib
+
+# vscode
+.vscode/**
+
+# Miscellaneous
+*.DS_Store
