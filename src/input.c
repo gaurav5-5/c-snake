@@ -117,7 +117,7 @@ void *direction_thread(void *arg)
                 CURRENT_STATE = PLAYING;
             break;
         case RESTART:
-            if (CURRENT_STATE == PAUSED)
+            if (CURRENT_STATE == PAUSED || CURRENT_STATE == GAME_OVER)
                 CURRENT_STATE = MENU;
             break;
         
