@@ -1,36 +1,60 @@
-#define EXTERN 
-#include "globals.h"
-#undef EXTERN
-#include "types.h"
+#include "macros.h"
+#include "terminal.h"
 #include "input.h"
+#include "game.h"
+#include "enums.h"
+#include "display.h"
+#include "vmath.h"
+#include "snake.h"
+#include "food.h"
 
 #include <pthread.h>    
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 
 int main()
 {
-    pthread_t input_thread;
+    GMdisplay *disp = GMd_new();
+    Game *game = new_game();
 
-    if(pthread_create(&input_thread, NULL, direction_thread, NULL))
+    link_game(disp, game);
+    game->player = new_snake(GMd_center(disp), 3, UP);
+
+    pthread_t threads[2];
+
+    if(pthread_create(&threads[0], NULL, input_thread, &game ))
     {
         fprintf(stderr, "Error creating input thread\n");
         return 1;
     }
 
-    enum INPUT_KEY prev = CURRENT_DIRECTION;
-    enum GAME_STATE p2 = CURRENT_STATE;
-    while(CURRENT_STATE != GAME_QUIT)
+    if(pthread_create(&threads[1], NULL, snake_thread, &game ))
     {
-        if(prev != CURRENT_DIRECTION || p2 != CURRENT_STATE)
-        {
-            printf("%a %c\n", (enum GAME_STATE)CURRENT_STATE, (char)CURRENT_DIRECTION);
-            prev = CURRENT_DIRECTION;
-            p2 = CURRENT_STATE;
-        }
+        fprintf(stderr, "Error creating snake thread\n");
+        return 1;
     }
 
-    pthread_join(input_thread, NULL);
+    init_buffer(disp);
+
+    // sleep(1);
+    CPOS(0, 0);
+
+    while(game->state != GAME_QUIT)
+    {
+        buffer_game(disp);
+        draw_game(disp);
+        sleep(0.6);
+        
+        // CLRSCR();
+    
+    }
+
+    pthread_join(threads[0], NULL);
+    pthread_join(threads[1], NULL);
+
+    set_term_color(WHITE, BLACK, NULL);
 
     return 0;
 }
