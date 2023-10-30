@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 11)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-set(SOURCES src/main.c src/input.c src/display.c)
+set(SOURCES src/snake.c src/input.c src/food.c src/game.c src/terminal.c src/display.c src/main.c)
 add_executable(snake_game ${SOURCES})
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
